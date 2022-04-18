@@ -60,3 +60,48 @@ public class index extends Applet implements ActionListener {
         g.drawString("Blank Spaces " +count, 40, 240);
     }
 }
+
+
+import java.applet.Applet;
+import java.awt.*;
+import java.awt.event.*;
+
+public class ReverceConcanteString extends Applet implements ActionListener{
+
+    TextField TF1 = new TextField(25);
+    TextField TF2 = new TextField(25);
+    String St = "";
+    int i;
+    Button Btn;
+    public void init() {
+        Btn = new Button("Click Here to Perform Task");
+        add(TF1);
+        add(TF2);
+        add(Btn);
+        Btn.addActionListener(this);
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        if(e.getSource()==Btn)
+        {
+             St = reverseString(TF1.getText().toString())+reverseString(TF2.getText().toString());
+        }
+        repaint();
+    }
+
+    public String reverseString(String str) {
+        char ch[] =str.toCharArray();
+        String rev ="";
+        for(int i = ch.length-1; i>=0; i--)
+        {
+            rev+=ch[i];
+        }
+        return rev;
+    }
+    public void paint(Graphics g)
+    {
+        g.drawString("Reversed with concated string : "+St, 40, 200);
+    }
+
+}

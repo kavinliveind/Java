@@ -150,3 +150,57 @@ public class PalindromeCheck extends Applet implements ActionListener {
         g.drawString(St, 40, 200);
     }
 }
+
+
+
+import java.applet.Applet;
+import java.awt.*;
+import java.awt.event.*;
+public class RadioButtonActionDifferentTasks extends Applet implements ItemListener{
+    
+    Label L1 = new Label("Check RadioButton to perform different tasks.");
+    CheckboxGroup g = new CheckboxGroup();
+    Checkbox tr = new Checkbox("Triangle",g,false);
+    Checkbox rc = new Checkbox("Reactangle",g,false);
+    Checkbox os = new Checkbox("Oval Shap",g,false);
+    Font font1 = new Font("SansSerif",Font.PLAIN,24);
+    public void init() {
+        L1.setFont(font1);
+        tr.setFont(font1);
+        rc.setFont(font1);
+        os.setFont(font1);
+        add(L1);
+        add(tr);
+        add(rc);
+        add(os);
+        tr.addItemListener(this);
+        rc.addItemListener(this);
+        os.addItemListener(this);
+    }
+
+    @Override
+    public void itemStateChanged(ItemEvent e) {
+        
+        Graphics g = getGraphics();
+        if(tr.getState()==true)
+        {
+            g.drawLine(440, 145, 180, 365);
+            g.drawLine(440, 145, 700, 365);
+            g.drawLine(180, 365, 700, 365);
+        }
+        if(rc.getState()==true)
+        {
+            g.drawRect(720, 440, 400, 400);
+            g.setColor(Color.GREEN);
+            g.fillRect(720, 440, 400, 400);
+        }
+        if(os.getState()==true)
+        {
+            g.drawOval(1200, 440, 500, 500);
+            g.setColor(Color.red);
+            g.fillOval(1200, 440, 500, 500);
+        }
+    }
+}
+
+

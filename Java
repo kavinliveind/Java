@@ -204,3 +204,83 @@ public class RadioButtonActionDifferentTasks extends Applet implements ItemListe
 }
 
 
+import java.applet.*;
+import java.awt.*;
+import java.awt.event.*;
+
+public class Assignment_02_Vkp extends Applet implements ActionListener{
+    Button B1,B2,B3;
+    List L1;
+    public void init() {
+        B1 = new Button("Triangle");
+        B2 = new Button("Reactange");
+        B3 = new Button("Oval");
+        L1 = new List(3);
+        L1.add("Green");
+        L1.add("Red");
+        L1.add("Blue");
+        add(B1);
+        add(B2);
+        add(B3);
+        add(L1);
+        B1.addActionListener(this);
+        B2.addActionListener(this);
+        B3.addActionListener(this);
+    }
+
+    public void actionPerformed(ActionEvent e)
+    {
+        Graphics g = getGraphics();
+        if(e.getSource()==B1)
+        {
+            int x[] = {150,250,50,150};
+            int y[] = {150,250,250,150};
+            if(L1.getSelectedIndex()==0)
+            {
+                g.setColor(Color.GREEN);
+                g.fillPolygon(x,y,4);
+            }
+            else if(L1.getSelectedIndex()==1)
+            {
+                g.setColor(Color.RED);
+                g.fillPolygon(x,y,4);
+            }else if(L1.getSelectedIndex()==2)
+            {
+                g.setColor(Color.BLUE);
+                g.fillPolygon(x,y,4);
+            }    
+        }
+        else if(e.getSource()==B2)
+        {
+               if(L1.getSelectedIndex()==0)
+               {
+                   g.setColor(Color.GREEN);
+                   g.fillRect(300, 300, 150, 150);
+               }else if(L1.getSelectedIndex()==1)
+               {
+                   g.setColor(Color.RED);
+                   g.fillRect(300, 300, 150, 150);
+               }else if(L1.getSelectedIndex()==2)
+               {
+                   g.setColor(Color.BLUE);
+                   g.fillRect(300, 300, 150, 150);
+               }
+        }
+        else if(e.getSource()==B3)
+        {
+                 if(L1.getSelectedIndex()==0)
+               {
+                   g.setColor(Color.GREEN);
+                   g.fillOval(500, 300,300, 300);
+               }else if(L1.getSelectedIndex()==1)
+               {
+                   g.setColor(Color.RED);
+                   g.fillOval(500, 300,300, 300);
+               }else if(L1.getSelectedIndex()==2)
+               {
+                   g.setColor(Color.BLUE);
+                   g.fillOval(500, 300,300, 300);
+               }
+        }
+    }
+}

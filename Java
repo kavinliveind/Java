@@ -1,0 +1,62 @@
+# Vowels Consonants Blank Spaces
+
+import java.applet.Applet;
+import java.awt.*;
+import java.awt.event.*;
+public class index extends Applet implements ActionListener {
+
+    int i;
+    int count;
+    String Text1 = "";
+    String Text2 = "";
+    Label L = new Label("Enter Text : ");
+    TextField T1 = new TextField(25);
+    Button Btn = new Button("Click Here");
+    public void init() {
+         add(L);
+        T1.setForeground(Color.blue);
+        add(T1);
+        add(Btn);
+        Btn.addActionListener(this);
+        
+    }
+    public void actionPerformed(ActionEvent e)
+    {
+        if(e.getSource()==Btn)
+        {
+            Text1="";
+            Text2="";
+            count=0;
+            repaint();
+            for(i=0; i<T1.getText().length(); i++)
+            {
+                if (T1.getText().charAt(i) == 'a' || T1.getText().charAt(i) == 'e' || T1.getText().charAt(i) == 'i'
+                    || T1.getText().charAt(i) == 'o' || T1.getText().charAt(i) == 'u')
+                {
+                    Text1+=T1.getText().charAt(i);
+                }
+            }
+            for(i=0; i<T1.getText().length(); i++)
+            {
+                if (T1.getText().charAt(i) != 'a' && T1.getText().charAt(i) != 'e' && T1.getText().charAt(i) != 'i'
+                    && T1.getText().charAt(i) != 'o' && T1.getText().charAt(i) != 'u')
+                {
+                    Text2+=T1.getText().charAt(i);
+                }
+            }
+            for(i=0; i<T1.getText().length(); i++)
+            {
+                if (T1.getText().charAt(i)==' ')
+                {
+                   count++;
+                }
+            }
+        }
+    }
+    public void paint(Graphics g)
+    {
+        g.drawString("Vowels : "+Text1, 40, 200);
+        g.drawString("Consonants : "+Text2,40,220);
+        g.drawString("Blank Spaces " +count, 40, 240);
+    }
+}

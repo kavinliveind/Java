@@ -284,3 +284,758 @@ public class Assignment_02_Vkp extends Applet implements ActionListener{
         }
     }
 }
+
+
+JSP CRUD
+
+<%-- 
+    Document   : Index
+    Created on : 16 Apr, 2022, 5:09:06 PM
+    Author     : Kavin Live
+--%>
+# INDEX
+
+<%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@page import="java.sql.*" %>
+<%@page import="java.sql.DriverManager" %>
+<%@page import="java.sql.ResultSet" %>
+<%@page import="java.sql.Statement" %>
+<%@page import="java.sql.Connection" %>
+<%@page import="java.sql.SQLException" %>
+
+<% 
+    
+    try{
+        Class.forName("com.mysql.jdbc.Driver");
+    } catch(ClassNotFoundException e)
+    {
+        e.printStackTrace();
+    }
+    Connection conn = null;
+    Statement st = null;
+    ResultSet rs = null;
+%>
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <title>Products</title>
+        <style>
+            body
+            {
+                background-color: background;
+                padding: 0px;
+                margin: 0px;
+            }
+            .head
+            {
+                margin: 10px;
+                color: blueviolet;
+            }
+            .box
+            {
+                width: auto;
+                height : auto;
+                background-color: white;
+                padding: 10px 20px 10px 20px;
+                margin: 20px 40px 0px 40px;
+                
+            }
+            .box .formproduct
+            {
+                font-size: 20px;
+            }
+            .box .formproduct input
+            {
+                font-size: 20px;
+            }
+            .box .formproduct select
+            {
+                font-size: 20px;
+            }
+            .box input {
+                align-items: center;
+                display : flex;
+                margin: 10px;
+            }
+            table
+            {
+                width: 100%;
+                height : auto;
+                border: 1px solid black;
+                border-collapse: collapse;
+            }
+            table thead
+            {
+                font-size: 22px;
+                border: 3px solid #0044b3;
+            }
+            table tr
+            {
+                font-size: 20px;
+                border: 3px solid #0044b3;
+            }
+            
+        </style>
+    </head>
+    <body>
+        
+        <div class="box">
+            <form action="insertData.jsp" method="Post" name="form" class="formproduct"> 
+                <h1 class="head">Add Product</h1>
+                Product Name :  <input type="text" name="pname">
+                Product Price :  <input type="text" name="pprice">
+                Proctuct Category : <select name="category">
+                    <option value="Shampo">Shampo</option>
+                    <option value="Dry Fruits">Dry Fruits</option>
+                    <option value="Ingredients">Ingredients</option>
+                                                 </select>
+                <input type="submit" name="submit" value="Add Product">
+            </form>
+         </div>
+        <div class="box">
+            <table cellspacing="0" cellpadding="15"rules="all">
+                <thead>
+                    <th>Product ID</th>
+                    <th>Product Name</th>
+                    <th>Product Price</th>
+                    <th>Product Category</th>
+                    <th>Update</th>
+                    <th>Delete</th>
+                </thead>
+                <%
+                    try{
+                    conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/jspdatabase","root","");
+                    st = conn.createStatement();
+                    String sql = "Select * From product";
+
+                    rs  = st.executeQuery(sql);
+                    while(rs.next())
+                    {
+                %>
+                    
+                <tr>
+                    <td>#<%=rs.getString("ProductId") %></td>
+                    <td><%=rs.getString("ProductName") %></td>
+                    <td>₹ <%=rs.getString("Price") %></td>
+                    <td><%=rs.getString("Category") %></td>
+                    <td><a href="updateData.jsp?id=<%=rs.getString("ProductId") %>">Update</a></td>
+                    <td><a href="deleteData.jsp?id=<%=rs.getString("ProductId") %>">Delete</a></td>
+                </tr>
+                <% 
+                    }
+                   } catch(Exception e)
+                    {
+                        e.printStackTrace();
+                    }
+                    %>
+            </table>
+        </div>
+    </body>
+</html>
+
+
+<%-- 
+    Document   : insertData
+    Created on : 16 Apr, 2022, 7:03:41 PM
+    Author     : Kavin Live
+--%>
+
+<%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@page import="java.sql.*" %>
+<%@page import="java.sql.DriverManager" %>
+<%@page import="java.sql.ResultSet" %>
+<%@page import="java.sql.Statement" %>
+<%@page import="java.sql.Connection" %>
+<%@page import="java.sql.SQLException" %>
+<%@page import="java.io.*" %>
+
+<% 
+    
+    try{
+        Class.forName("com.mysql.jdbc.Driver");
+        Connection conn = null;
+        PreparedStatement st = null;
+        
+        String pname = request.getParameter("pname");
+        String pprice = request.getParameter("pprice");
+        String category = request.getParameter("category");
+        conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/jspdatabase","root","");
+                    st = conn.prepareStatement("INSERT INTO product (ProductName,Price,Category) Values(?,?,?)");
+                    st.setString(1, pname);
+                    st.setString(2, pprice);
+                    st.setString(3, category);
+                    
+               if( st.executeUpdate()==1)
+               {
+                   response.sendRedirect("index.jsp");
+               }
+               
+    } catch( Exception e)
+    {
+        e.printStackTrace();
+    }
+    
+%>
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+</html>
+
+<%-- 
+    Document   : insertData
+    Created on : 16 Apr, 2022, 7:03:41 PM
+    Author     : Kavin Live
+--%>
+
+<%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@page import="java.sql.*" %>
+<%@page import="java.sql.DriverManager" %>
+<%@page import="java.sql.ResultSet" %>
+<%@page import="java.sql.Statement" %>
+<%@page import="java.sql.Connection" %>
+<%@page import="java.sql.SQLException" %>
+<%@page import="java.io.*" %>
+
+<% 
+    
+    try{
+        Class.forName("com.mysql.jdbc.Driver");
+        Connection conn = null;
+        PreparedStatement st = null;
+        
+        String pid = request.getParameter("id");
+        conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/jspdatabase","root","");
+                    st = conn.prepareStatement("Delete from product where ProductId = ?");
+                    st.setString(1, pid);
+               if( st.executeUpdate()==1)
+               {
+                   response.sendRedirect("index.jsp");
+               }
+               
+    } catch( Exception e)
+    {
+        e.printStackTrace();
+    }
+    
+%>
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+</html>
+
+<%-- 
+    Document   : Index
+    Created on : 16 Apr, 2022, 5:09:06 PM
+    Author     : Kavin Live
+--%>
+
+<%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@page import="java.sql.*" %>
+<%@page import="java.sql.DriverManager" %>
+<%@page import="java.sql.ResultSet" %>
+<%@page import="java.sql.Statement" %>
+<%@page import="java.sql.Connection" %>
+<%@page import="java.sql.SQLException" %>
+
+<% 
+    
+    
+    int in = Integer.parseInt(request.getParameter("id"));
+    
+    
+%>
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <title>Products</title>
+        <style>
+            body
+            {
+                background-color: background;
+                padding: 0px;
+                margin: 0px;
+            }
+            .head
+            {
+                margin: 10px;
+                color: blueviolet;
+            }
+            .box
+            {
+                width: auto;
+                height : auto;
+                background-color: white;
+                padding: 10px 20px 10px 20px;
+                margin: 20px 40px 0px 40px;
+                
+            }
+            .box .formproduct
+            {
+                font-size: 20px;
+            }
+            .box .formproduct input
+            {
+                font-size: 20px;
+            }
+            .box .formproduct select
+            {
+                font-size: 20px;
+            }
+            .box input {
+                align-items: center;
+                display : flex;
+                margin: 10px;
+            }
+            table
+            {
+                width: 100%;
+                height : auto;
+                border: 1px solid black;
+                border-collapse: collapse;
+            }
+            table thead
+            {
+                font-size: 22px;
+                border: 3px solid #0044b3;
+            }
+            table tr
+            {
+                font-size: 20px;
+                border: 3px solid #0044b3;
+            }
+            
+        </style>
+    </head>
+    <body>
+        
+        <div class="box">
+            <form action="updateDataProcess.jsp?id=<%=in%>" method="Post" name="form" class="formproduct"> 
+                <h1 class="head">Update Product</h1>
+                <%
+                    try{
+                        
+                        Class.forName("com.mysql.jdbc.Driver");
+                        Connection conn = null;
+                        Statement st = null;
+                        ResultSet rs = null;
+                        
+
+                        conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/jspdatabase","root","");
+                        st = conn.createStatement();
+                        String sql = "Select * from product where ProductId = "+in;
+                        rs = st.executeQuery(sql);
+                        rs.first();
+                        String pname = rs.getString("ProductName");
+                        float pprice = rs.getFloat("Price");
+                        String category = rs.getString("Category");
+                 %>
+                        Product Name :  <input type="text" name="pname" value="<%=pname%>">
+                        Product Price :  <input type="text" name="pprice" value="<%=pprice%>">
+                        Proctuct Category : 
+                        <select name="category">    
+                                <option value="Shampo" <% if("Shampo".equals(category)){ out.print("Selected");}%>>Shampo</option>
+                                <option value="Dry Fruits" <% if("Dry Fruits".equals(category)){ out.print("Selected");}%>>Dry Fruits</option>
+                                <option value="Ingredients" <% if("Ingredients".equals(category)){ out.print("Selected");}%>>Ingredients</option>
+                        </select>
+                  <% 
+                        } catch(ClassNotFoundException e)
+                        {
+                            e.printStackTrace();
+                        }
+                   %>
+                <input type="submit" name="submit" value="Update Product">
+            </form>
+         </div>
+    </body>
+</html>
+
+<%-- 
+    Document   : insertData
+    Created on : 16 Apr, 2022, 7:03:41 PM
+    Author     : Kavin Live
+--%>
+
+<%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@page import="java.sql.*" %>
+<%@page import="java.sql.DriverManager" %>
+<%@page import="java.sql.ResultSet" %>
+<%@page import="java.sql.Statement" %>
+<%@page import="java.sql.Connection" %>
+<%@page import="java.sql.SQLException" %>
+<%@page import="java.io.*" %>
+
+<% 
+    
+    try{
+        Class.forName("com.mysql.jdbc.Driver");
+        Connection conn = null;
+        PreparedStatement st = null;
+        
+        String pname = request.getParameter("pname");
+        String pprice = request.getParameter("pprice");
+        String category = request.getParameter("category");
+        int  pid = Integer.parseInt(request.getParameter("id"));
+        conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/jspdatabase","root","");
+                    st = conn.prepareStatement("Update product set ProductName=?,Price=?,Category=? where ProductId=?");
+                    st.setString(1, pname);
+                    st.setString(2, pprice);
+                    st.setString(3, category);
+                    st.setInt(4, pid);
+                    
+               if( st.executeUpdate()==1)
+               {
+                   response.sendRedirect("index.jsp");
+               }
+               
+    } catch( Exception e)
+    {
+        e.printStackTrace();
+    }
+    
+%>
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+</html>
+
+Servlet CRUD
+
+<%@page contentType="text/html" pageEncoding="UTF-8"%>
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <title>Registration Form</title>
+        <style>
+            body{
+                font-size: 25px;
+            }
+            body input 
+            {
+                font-size : 25px
+            }
+        </style>
+    </head>
+    <body>
+        <h1>User Registration</h1><br>
+        <form action="AddServlet"method="post">
+            User Name : <input type="text" name ="UName"><br><br>
+            User Email : <input type="email" name ="UEmail"><br><br>
+            User Password : <input type="password" name="Password"><br><br>
+            <input type="submit" value="Register"> 
+        </form>
+        <form action="ViewServlet"method="post">
+            Data : 
+            <input type="submit" value="Show"> 
+        </form>
+    </body>
+</html>
+
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+/**
+ *
+ * @author Kavin Live
+ */
+@WebServlet(urlPatterns = {"/insert"})
+public class InsertData extends HttpServlet {
+
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        response.setContentType("text/html;charset=UTF-8");
+        String UserName = request.getParameter("UName");
+        String UserEmail = request.getParameter("UEmail");
+        String UserPassword = request.getParameter("Password");
+        try (PrintWriter out = response.getWriter()) {
+         
+            out.print(UserName);
+            out.print(UserEmail);
+            out.print(UserPassword);
+            Class.forName("com.mysql.jdbc.Driver");
+            PreparedStatement st = null;
+            Connection conn=null;
+            conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/usersachin","root","");
+            if(conn!=null)
+            {
+                out.print("Connection Established");
+                st = conn.prepareStatement("INSERT INTO user(Name,Email,Password) VALUES (?, ? , ?)");
+                st.setString(1, UserName);
+                st.setString(2, UserEmail);
+                st.setString(3, UserPassword);
+                int i = st.executeUpdate();
+                if(i>0)
+                {
+                    out.print("Successfully Inserted");
+                }
+            }
+            else
+            {
+                out.print("Connection not Established");
+            }
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(InsertData.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (SQLException ex) {
+            Logger.getLogger(InsertData.class.getName()).log(Level.SEVERE, null, ex);
+        }            
+    }
+ }
+ 
+ 
+ import java.io.IOException;
+import java.io.PrintWriter;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+
+@WebServlet(urlPatterns = {"/AddServlet"})
+public class RegisterServlet extends HttpServlet {
+
+    protected void processRequest(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException, ClassNotFoundException, SQLException {
+        response.setContentType("text/html;charset=UTF-8");
+            
+        String UserName = request.getParameter("UName");
+        String UserEmail = request.getParameter("UEmail");
+        String UserPassword = request.getParameter("Password");
+        try (PrintWriter out = response.getWriter()) {
+         
+            out.print(UserName);
+            out.print(UserEmail);
+            out.print(UserPassword);
+            Class.forName("com.mysql.jdbc.Driver");
+            PreparedStatement st = null;
+            Connection conn=null;
+            conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/usersachin","root","");
+            out.println("<!DOCTYPE html>");
+            out.println("<html>");
+            out.println("<head>");
+            out.println("<title>Servlet RegisterServlet</title>");            
+            out.println("</head>");
+            out.println("<body>");
+            out.println("<h1>Servlet RegisterServlet at " + request.getContextPath() + "</h1>");
+            out.println("</body>");
+            if(conn!=null)
+            {
+                st = conn.prepareStatement("INSERT INTO user(Name,Email,Password) VALUES (?, ? , ?)");
+                st.setString(1, UserName);
+                st.setString(2, UserEmail);
+                st.setString(3, UserPassword);
+                int i = st.executeUpdate();
+                if(i>0)
+                {
+                    out.print("<h4>Successfully Inserted</h4>");
+                }
+            }
+            else
+            {
+                out.print("Connection not Established");
+            }
+            Statement state = null;
+            ResultSet rs = null;
+            if(conn!=null)
+            {
+                state = conn.createStatement();
+                String sql = "Select * from user";
+                rs = state.executeQuery(sql);
+                out.print("<table border='1' style='width=100%'>");
+                out.print("<thead><th>ID</th><th>Name</th><th>Email</th><th>Password</th><th>Update</th><th>Delete</th></thead>");
+                while (rs.next())
+                {
+                    String  Updateurl = "UpdateData?id="+rs.getString("Id");
+                    String  Deleteurl = "DeleteServlet?id="+rs.getString("Id");
+                    out.print("<tr><td>"+rs.getString("Id")+"</td><td>"+rs.getString("Name")+"</td><td>"+rs.getString("Email")+"</td><td>"+rs.getString("Password")+"</td><td><a href='"+Updateurl+"'>Edit</a></td><td><a href='"+Deleteurl+"'>Delete</a></td></tr>");
+                }
+                out.print("</table>");
+            }
+            out.println("</html>");
+        }
+    }
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        try {
+            processRequest(request, response);
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(RegisterServlet.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (SQLException ex) {
+            Logger.getLogger(RegisterServlet.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+}
+
+
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+public class UpdateServlet extends HttpServlet {
+
+    protected void processRequest(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException, ClassNotFoundException, SQLException {
+        response.setContentType("text/html;charset=UTF-8");
+        String UserId = request.getParameter("UId");
+        String UserName = request.getParameter("UName");
+        String UserEmail = request.getParameter("UEmail");
+        String UserPassword = request.getParameter("Password");
+        try (PrintWriter out = response.getWriter()) {
+            
+            Class.forName("com.mysql.jdbc.Driver");
+            PreparedStatement st = null;
+            Connection conn=null;
+            conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/usersachin","root","");
+            if(conn!=null)
+            {
+                out.print("Connection Established");
+                st = conn.prepareStatement("Update user set Name = ?,Email = ?, Password = ? where Id = ?");
+                st.setString(1, UserName);
+                st.setString(2, UserEmail);
+                st.setString(3, UserPassword);
+                st.setString(4, UserId);
+                int i = st.executeUpdate();
+                if(i>0)
+                {
+                    response.sendRedirect("index.jsp");
+                }
+            }
+        }
+    }
+    
+
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        try {
+            processRequest(request, response);
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(UpdateServlet.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (SQLException ex) {
+            Logger.getLogger(UpdateServlet.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+}
+
+
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+/**
+ *
+ * @author Kavin Live
+ */
+@WebServlet(urlPatterns = {"/ViewServlet"})
+public class ViewServlet extends HttpServlet {
+
+    protected void processRequest(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException, ClassNotFoundException, SQLException {
+        response.setContentType("text/html;charset=UTF-8");
+        try (PrintWriter out = response.getWriter()) {
+            Class.forName("com.mysql.jdbc.Driver");
+            PreparedStatement st = null;
+            Connection conn=null;
+            conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/usersachin","root","");
+            Statement state = null;
+            ResultSet rs = null;
+            if(conn!=null)
+            {
+                state = conn.createStatement();
+                String sql = "Select * from user";
+                rs = state.executeQuery(sql);
+                out.print("<table border='1' style='width=100%'>");
+                out.print("<thead><th>ID</th><th>Name</th><th>Email</th><th>Password</th><th>Update</th><th>Delete</th></thead>");
+                while (rs.next())
+                {
+                    String  Updateurl = "UpdateData?id="+rs.getString("Id");
+                    String  Deleteurl = "DeleteServlet?id="+rs.getString("Id");
+                    out.print("<tr><td>"+rs.getString("Id")+"</td><td>"+rs.getString("Name")+"</td><td>"+rs.getString("Email")+"</td><td>"+rs.getString("Password")+"</td><td><a href='"+Updateurl+"'>Edit</a></td><td><a href='"+Deleteurl+"'>Delete</a></td></tr>");
+                }
+                out.print("</table>");
+            }
+            out.println("</html>");
+        
+        }
+    }
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        try {
+            processRequest(request, response);
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(ViewServlet.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (SQLException ex) {
+            Logger.getLogger(ViewServlet.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    /**
+     * Returns a short description of the servlet.
+     *
+     * @return a String containing servlet description
+     */
+    @Override
+    public String getServletInfo() {
+        return "Short description";
+    }// </editor-fold>
+
+}
+
